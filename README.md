@@ -329,7 +329,7 @@ http://localhost:8000
 ### 📚 Documentación de la API
 
 **Swagger UI (interactiva):**
-```
+```v
 http://localhost:8000/docs
 ```
 
@@ -431,8 +431,8 @@ Al entrar verás:
    - ❌ Productos con errores (se muestran detalles)
 
 **Archivos de ejemplo incluidos:**
-- `examples/productos_ejemplo.csv`
-- `examples/productos_ejemplo.xlsx`
+- `archivos_importacion/productos_200k.csv`
+- `archivos_importacion/productos_100k.xlsx`
 
 **Exportar Productos:**
 
@@ -628,93 +628,6 @@ pytest --cov=app --cov-report=html tests/
 
 ---
 
-## 🔧 Configuración Avanzada
-
-### Base de Datos PostgreSQL
-
-**1. Instalar PostgreSQL:**
-- Windows: https://www.postgresql.org/download/windows/
-- Linux: `sudo apt-get install postgresql`
-- Mac: `brew install postgresql`
-
-**2. Crear base de datos:**
-
-```sql
--- Conectarse a PostgreSQL
-psql -U postgres
-
--- Crear base de datos
-CREATE DATABASE inventory_db;
-
--- Crear usuario (opcional)
-CREATE USER inventory_user WITH PASSWORD 'tu_password';
-
--- Dar permisos
-GRANT ALL PRIVILEGES ON DATABASE inventory_db TO inventory_user;
-
--- Salir
-\q
-```
-
-**3. Actualizar `.env`:**
-
-```env
-DATABASE_URL=postgresql://inventory_user:tu_password@localhost:5432/inventory_db
-```
-
-**4. Reinicializar base de datos:**
-
-```bash
-python init_db.py
-```
-
-### Configurar CORS
-
-Si tu frontend está en otro dominio:
-
-```env
-# En .env
-ALLOWED_ORIGINS=http://localhost:3000,https://miapp.com,https://www.miapp.com
-```
-
-### Cambiar Puerto
-
-```bash
-# Puerto 3000 en lugar de 8000
-uvicorn app.main:app --reload --port 3000
-```
-
-### Habilitar HTTPS (Producción)
-
-```bash
-# Con certificado SSL
-uvicorn app.main:app \
-  --host 0.0.0.0 \
-  --port 443 \
-  --ssl-keyfile=/path/to/key.pem \
-  --ssl-certfile=/path/to/cert.pem
-```
-
-### Variables de Entorno Adicionales
-
-```env
-# Tamaño máximo de archivo
-MAX_UPLOAD_SIZE=20971520  # 20MB
-
-# Carpeta de uploads
-UPLOAD_FOLDER=./uploads
-
-# Paginación
-DEFAULT_PAGE_SIZE=100
-MAX_PAGE_SIZE=5000
-
-# Exportación
-MAX_EXPORT_RECORDS=1000000
-EXPORT_BATCH_SIZE=50000
-```
-
----
-
 ## 📊 Estructura de Datos
 
 ### Modelo de Usuario (User)
@@ -797,76 +710,6 @@ cat .env | grep DATABASE_URL
 python init_db.py
 ```
 
-### Problema: Error de bcrypt
-
-**Error:** `password cannot be longer than 72 bytes`
-
-**Solución:**
-```bash
-# Ejecutar script de arreglo
-python fix_bcrypt.py
-
-# O manualmente:
-pip uninstall bcrypt passlib -y
-pip install bcrypt==4.0.1 passlib[bcrypt]==1.7.4
-
-# Reinicializar BD
-python init_db.py
-```
-
-### Problema: CORS error en el frontend
-
-**Error:** `Access to fetch at '...' from origin '...' has been blocked by CORS policy`
-
-**Solución:**
-
-1. Verificar que el frontend esté accediendo desde `http://localhost:8000`
-2. Si usas otro puerto/dominio, actualizar `.env`:
-   ```env
-   ALLOWED_ORIGINS=http://localhost:8000,http://localhost:3000,http://tudominio.com
-   ```
-3. Reiniciar el servidor
-
-### Problema: No se puede importar archivos
-
-**Error:** Importación falla o muestra errores
-
-**Solución:**
-
-1. Verificar formato del archivo:
-   ```csv
-   nombre,descripcion,precio,stock,categoria
-   Producto1,Descripción,99.99,100,Categoría
-   ```
-
-2. Verificar que:
-   - Los precios usen punto decimal (99.99, no 99,99)
-   - El stock sea número entero
-   - No haya campos vacíos en columnas obligatorias
-
-3. Revisar el log de importación para errores específicos
-
-### Problema: Token expirado
-
-**Error:** `401 Unauthorized` o `Could not validate credentials`
-
-**Solución:**
-- El token expira después de 30 minutos
-- Vuelve a hacer login para obtener un nuevo token
-- O aumenta `ACCESS_TOKEN_EXPIRE_MINUTES` en `.env`
-
-### Problema: Frontend no carga
-
-**Error:** Página en blanco o error 404
-
-**Solución:**
-
-1. Verificar que la carpeta `frontend/` existe
-2. Verificar que `frontend/index.html` existe
-3. Reiniciar el servidor
-4. Limpiar caché del navegador (Ctrl+F5)
-
----
 
 ## 📈 Optimización y Rendimiento
 
@@ -955,16 +798,12 @@ gunicorn app.main:app \
 
 - **README.md** (este archivo) - Documentación completa
 - **TECHNICAL_DOCS.md** - Arquitectura y detalles técnicos
-- **RESUMEN_EJECUTIVO.md** - Resumen del proyecto
-- **SOLUCION_BCRYPT.md** - Solución a problemas de bcrypt
-- **frontend/README.md** - Documentación del frontend
-- **frontend/GUIA_RAPIDA.md** - Guía rápida para usuarios
+
 
 ### Endpoints de la API
 
 Consulta la documentación interactiva en:
 - http://localhost:8000/docs (Swagger)
-- http://localhost:8000/redoc (ReDoc)
 
 ### Arquitectura del Sistema
 
@@ -984,39 +823,6 @@ Consulta la documentación interactiva en:
                                │   Database   │
                                └──────────────┘
 ```
-
----
-
-## 🤝 Contribución
-
-### Reportar Bugs
-
-Si encuentras un bug:
-1. Verifica que no esté ya reportado
-2. Crea un issue con:
-   - Descripción del problema
-   - Pasos para reproducirlo
-   - Comportamiento esperado vs actual
-   - Screenshots (si aplica)
-   - Información del sistema
-
-### Sugerir Mejoras
-
-Para sugerir nuevas características:
-1. Crea un issue con:
-   - Descripción de la característica
-   - Casos de uso
-   - Beneficios esperados
-
-### Pull Requests
-
-1. Fork el repositorio
-2. Crea una rama: `git checkout -b feature/NuevaCaracteristica`
-3. Commit cambios: `git commit -m 'Agrega nueva característica'`
-4. Push: `git push origin feature/NuevaCaracteristica`
-5. Abre un Pull Request
-
----
 
 ## 📝 Changelog
 
@@ -1039,81 +845,3 @@ Para sugerir nuevas características:
 - ✅ Importación/Exportación con UI
 - ✅ Diseño responsive
 
----
-
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT. Ver archivo `LICENSE` para más detalles.
-
----
-
-## 👨‍💻 Autor
-
-Desarrollado como prueba técnica de Desarrollador Laravel, implementado en Python/FastAPI.
-
----
-
-## 📞 Soporte
-
-### Recursos de Ayuda
-
-- **Documentación API:** http://localhost:8000/docs
-- **Guía de Usuario:** `frontend/GUIA_RAPIDA.md`
-- **Documentación Técnica:** `TECHNICAL_DOCS.md`
-- **Issues:** Reportar en el repositorio
-
-### Comunidad
-
-- Python: https://docs.python.org/
-- FastAPI: https://fastapi.tiangolo.com/
-- SQLAlchemy: https://docs.sqlalchemy.org/
-
----
-
-## 🎓 Recursos de Aprendizaje
-
-Si quieres aprender más sobre las tecnologías usadas:
-
-### Backend
-- [FastAPI Tutorial](https://fastapi.tiangolo.com/tutorial/)
-- [SQLAlchemy Tutorial](https://docs.sqlalchemy.org/en/14/tutorial/)
-- [Pydantic Documentation](https://docs.pydantic.dev/)
-- [JWT Introduction](https://jwt.io/introduction)
-
-### Frontend
-- [MDN Web Docs](https://developer.mozilla.org/)
-- [JavaScript.info](https://javascript.info/)
-- [CSS Tricks](https://css-tricks.com/)
-
----
-
-## ⭐ Características Futuras
-
-Posibles mejoras para futuras versiones:
-
-- [ ] Sistema de roles y permisos
-- [ ] Notificaciones en tiempo real (WebSockets)
-- [ ] Gráficos y reportes avanzados
-- [ ] Modo oscuro en frontend
-- [ ] Aplicación móvil
-- [ ] Integración con sistemas externos
-- [ ] API rate limiting
-- [ ] Caché con Redis
-- [ ] Procesamiento asíncrono con Celery
-- [ ] Multiidioma
-- [ ] Auditoría completa de cambios
-- [ ] Sistema de alertas automáticas
-
----
-
-## 🎉 Agradecimientos
-
-Gracias por usar Inventory Manager. Si te ha sido útil, ¡compártelo!
-
-**¿Preguntas? ¿Sugerencias?** No dudes en contactar o abrir un issue.
-
----
-
-**Made with ❤️ using Python & FastAPI**
-
-*Última actualización: Enero 2026*

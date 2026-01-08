@@ -57,11 +57,10 @@ app.include_router(products.router, prefix=API_V1_PREFIX)
 app.include_router(import_export.router, prefix=API_V1_PREFIX)
 app.include_router(import_export.logs_router, prefix=API_V1_PREFIX)  
 
-
-# Serve frontend static files - DEBE IR DESPUÉS de los routers
+# Serve frontend static files -
 frontend_path = Path(__file__).parent.parent / "frontend"
 if frontend_path.exists():
-    # Servir archivos estáticos SIN html=True para no interferir con /redoc y /docs
+    # Servir archivos estáticos SIN html=True 
     app.mount("/static", StaticFiles(directory=str(frontend_path)), name="static")
     
     @app.get("/", include_in_schema=False)
