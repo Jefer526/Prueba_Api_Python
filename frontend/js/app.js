@@ -523,11 +523,30 @@ function displayImportLogs(logs) {
                 <p>Total: ${log.total_rows} | Exitosos: ${log.successful_rows} | Fallidos: ${log.failed_rows}</p>
                 <p>${new Date(log.started_at).toLocaleString('es-ES')}</p>
             </div>
-            <span class="log-status ${log.status}">${log.status}</span>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <span class="log-status ${log.status}">${log.status}</span>
+                ${log.failed_rows > 0 ? `
+                    <button class="btn btn-sm btn-danger" onclick="downloadErrors(${log.id})" title="Descargar errores">
+                        <i class="fas fa-download"></i> Errores
+                    </button>
+                ` : ''}
+            </div>
         </div>
     `).join('');
 }
 
+async function downloadErrors(logId) {
+    showLoading();
+    
+    try {
+        await api.downloadImportErrors(logId);
+        showToast('Archivo de errores descargado exitosamente', 'success');
+    } catch (error) {
+        showToast('Error al descargar archivo de errores', 'error');
+    } finally {
+        hideLoading();
+    }
+}
 // UI Helpers
 function showLoading() {
     document.getElementById('loading-overlay').classList.add('show');

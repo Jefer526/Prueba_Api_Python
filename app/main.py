@@ -55,8 +55,8 @@ API_V1_PREFIX = "/api/v1"
 app.include_router(auth.router, prefix=API_V1_PREFIX)
 app.include_router(products.router, prefix=API_V1_PREFIX)
 app.include_router(import_export.router, prefix=API_V1_PREFIX)
+app.include_router(import_export.logs_router, prefix=API_V1_PREFIX)  
 
-# En app/main.py, reemplaza desde la línea 59 hasta el final con esto:
 
 # Serve frontend static files - DEBE IR DESPUÉS de los routers
 frontend_path = Path(__file__).parent.parent / "frontend"

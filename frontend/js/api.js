@@ -212,7 +212,39 @@ const api = {
 
     // Get import logs
     async getImportLogs(params = {}) {
-        const queryString = new URLSearchParams(params).toString();
-        return await this.get(`/products/import-logs?${queryString}`);
+        const queryString = new URLSearchParams({
+            skip: params.skip || 0,
+            limit: params.limit || 10
+        }).toString();
+        return await this.get(`/import-logs?${queryString}`);
+    },
+
+    // Download import errors
+    async downloadImportErrors(logId) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/products/import-logs/${logId}/download-errors`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${this.getToken()}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al descargar errores');
+            }
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `errores_importacion_${logId}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        } catch (error) {
+            console.error('Download Errors Error:', error);
+            throw error;
+        }
     }
 };
