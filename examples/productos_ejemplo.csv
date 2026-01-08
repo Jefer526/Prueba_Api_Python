@@ -1,0 +1,31 @@
+nombre,descripcion,precio,stock,categoria
+Laptop HP Pavilion,Laptop HP con 8GB RAM y 256GB SSD,699.99,100,Electrónica
+Mouse Inalámbrico,Mouse óptico inalámbrico 2.4GHz,19.99,500,Accesorios
+Teclado USB,Teclado con cable USB estándar,29.99,300,Accesorios
+Monitor Samsung 24",Monitor LED Full HD 24 pulgadas,189.99,75,Electrónica
+Webcam Logitech C920,Webcam Full HD 1080p con micrófono,79.99,150,Accesorios
+Auriculares Sony,Auriculares inalámbricos con cancelación de ruido,249.99,80,Electrónica
+Hub USB-C,Hub USB-C con 4 puertos USB 3.0,34.99,200,Accesorios
+SSD Samsung 1TB,Disco de estado sólido NVMe 1TB,119.99,120,Almacenamiento
+Memoria RAM 16GB,Memoria DDR4 16GB 3200MHz,89.99,250,Componentes
+Tarjeta Gráfica GTX 1660,Tarjeta gráfica NVIDIA GeForce GTX 1660 6GB,299.99,45,Componentes
+Procesador Intel i5,Procesador Intel Core i5 11400F,199.99,60,Componentes
+Placa Base ASUS,Placa base ASUS Prime B560M-A,129.99,90,Componentes
+Fuente de Poder 650W,Fuente de poder modular 650W 80+ Bronze,79.99,110,Componentes
+Gabinete ATX,Gabinete ATX con ventiladores RGB,69.99,85,Componentes
+Refrigeración Líquida,Sistema de refrigeración líquida AIO 240mm,109.99,55,Componentes
+Tablet Samsung Galaxy,Tablet 10.1 pulgadas Android 128GB,349.99,70,Electrónica
+iPad Air,Apple iPad Air 64GB WiFi,599.99,50,Electrónica
+Smartphone Xiaomi,Smartphone Redmi Note 11 128GB,249.99,200,Móviles
+Smartphone Samsung,Samsung Galaxy A52 128GB,329.99,150,Móviles
+Cargador Rápido 65W,Cargador rápido USB-C 65W,29.99,400,Accesorios
+Cable HDMI 2.1,Cable HDMI 2.1 2 metros 8K,19.99,600,Accesorios
+Adaptador Ethernet USB,Adaptador de red Ethernet a USB 3.0,24.99,180,Accesorios
+Mousepad Gaming,Mousepad grande para gaming RGB,34.99,220,Accesorios
+Silla Gaming,Silla gaming ergonómica con reposabrazos ajustables,299.99,40,Mobiliario
+Escritorio Ajustable,Escritorio de altura ajustable eléctrico,499.99,25,Mobiliario
+Lámpara LED Escritorio,Lámpara LED para escritorio regulable,39.99,150,Iluminación
+Soporte Monitor Dual,Soporte de escritorio para dos monitores,89.99,95,Accesorios
+Micrófono USB,Micrófono de condensador USB para streaming,129.99,85,Audio
+Bocinas Bluetooth,Bocinas estéreo Bluetooth portátiles,59.99,180,Audio
+Router WiFi 6,Router inalámbrico WiFi 6 dual band,149.99,70,Redes
