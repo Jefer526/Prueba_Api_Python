@@ -1,5 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+from pathlib import Path
 from app.config import settings
 from app.routers import auth, products, import_export
 
@@ -53,20 +56,37 @@ app.include_router(auth.router, prefix=API_V1_PREFIX)
 app.include_router(products.router, prefix=API_V1_PREFIX)
 app.include_router(import_export.router, prefix=API_V1_PREFIX)
 
+# En app/main.py, reemplaza desde la línea 59 hasta el final con esto:
 
-@app.get("/", tags=["Root"])
-async def root():
-    """
-    Endpoint raíz de la API.
+# Serve frontend static files - DEBE IR DESPUÉS de los routers
+frontend_path = Path(__file__).parent.parent / "frontend"
+if frontend_path.exists():
+    # Servir archivos estáticos SIN html=True para no interferir con /redoc y /docs
+    app.mount("/static", StaticFiles(directory=str(frontend_path)), name="static")
     
-    Retorna información básica sobre la API.
-    """
-    return {
-        "message": "Bienvenido a Inventory API",
-        "version": settings.APP_VERSION,
-        "docs": "/docs",
-        "redoc": "/redoc"
-    }
+    @app.get("/", include_in_schema=False)
+    async def serve_frontend():
+        """Serve the frontend application."""
+        index_file = frontend_path / "index.html"
+        if index_file.exists():
+            return FileResponse(index_file)
+        return {"message": "Frontend not found. Please check the frontend directory."}
+        
+else:
+    @app.get("/", tags=["Root"])
+    async def root():
+        """
+        Endpoint raíz de la API.
+        
+        Retorna información básica sobre la API.
+        """
+        return {
+            "message": "Bienvenido a Inventory API",
+            "version": settings.APP_VERSION,
+            "docs": "/docs",
+            "redoc": "/redoc",
+            "note": "Frontend not found. Install frontend files in the 'frontend' directory to access the web interface."
+        }
 
 
 @app.get("/health", tags=["Health"])

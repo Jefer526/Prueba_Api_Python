@@ -19,6 +19,10 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     Returns:
         True if the password matches, False otherwise
     """
+    # Truncate password if needed (bcrypt limit is 72 bytes)
+    if len(plain_password.encode('utf-8')) > 72:
+        plain_password = plain_password.encode('utf-8')[:72].decode('utf-8', errors='ignore')
+    
     return pwd_context.verify(plain_password, hashed_password)
 
 
@@ -31,7 +35,15 @@ def get_password_hash(password: str) -> str:
         
     Returns:
         The hashed password
+    
+    Note:
+        bcrypt has a maximum password length of 72 bytes.
+        Passwords longer than this will be truncated.
     """
+    # Truncate password if needed (bcrypt limit is 72 bytes)
+    if len(password.encode('utf-8')) > 72:
+        password = password.encode('utf-8')[:72].decode('utf-8', errors='ignore')
+    
     return pwd_context.hash(password)
 
 

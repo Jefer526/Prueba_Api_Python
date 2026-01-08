@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Manager - Sistema de Gestión de Inventario</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Login/Register Screen -->
+    <div id="auth-screen" class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <i class="fas fa-boxes"></i>
+                <h1>Inventory Manager</h1>
+                <p>Sistema de Gestión de Inventario</p>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-form" class="auth-form">
+                <h2>Iniciar Sesión</h2>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="login-username">
+                            <i class="fas fa-user"></i> Usuario
+                        </label>
+                        <input type="text" id="login-username" required placeholder="Ingresa tu usuario">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">
+                            <i class="fas fa-lock"></i> Contraseña
+                        </label>
+                        <input type="password" id="login-password" required placeholder="Ingresa tu contraseña">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    </button>
+                </form>
+                <p class="auth-switch">
+                    ¿No tienes cuenta? <a href="#" onclick="showRegister()">Regístrate aquí</a>
+                </p>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-form" class="auth-form" style="display: none;">
+                <h2>Crear Cuenta</h2>
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label for="register-username">
+                            <i class="fas fa-user"></i> Usuario
+                        </label>
+                        <input type="text" id="register-username" required placeholder="Elige un usuario">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">
+                            <i class="fas fa-envelope"></i> Correo Electrónico
+                        </label>
+                        <input type="email" id="register-email" required placeholder="tu@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">
+                            <i class="fas fa-lock"></i> Contraseña
+                        </label>
+                        <input type="password" id="register-password" required placeholder="Mínimo 6 caracteres">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-user-plus"></i> Crear Cuenta
+                    </button>
+                </form>
+                <p class="auth-switch">
+                    ¿Ya tienes cuenta? <a href="#" onclick="showLogin()">Inicia sesión</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app-screen" style="display: none;">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-boxes"></i>
+                <h2>Inventory</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" onclick="showSection('dashboard')">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('products')">
+                    <i class="fas fa-box"></i> Productos
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('import-export')">
+                    <i class="fas fa-file-import"></i> Importar/Exportar
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="current-user">Usuario</span>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i> Salir
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <h1 id="page-title">Dashboard</h1>
+                <div class="header-actions">
+                    <button class="btn btn-icon" onclick="loadData()">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="content-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-blue">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-products">0</h3>
+                            <p>Total Productos</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-green">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-stock">0</h3>
+                            <p>Stock Total</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-purple">
+                            <i class="fas fa-tag"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-categories">0</h3>
+                            <p>Categorías</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-orange">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-value">$0</h3>
+                            <p>Valor Total</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-products">
+                    <h2>Productos Recientes</h2>
+                    <div id="recent-products-list"></div>
+                </div>
+            </section>
+
+            <!-- Products Section -->
+            <section id="products-section" class="content-section" style="display: none;">
+                <div class="section-header">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="search-input" placeholder="Buscar productos..." onkeyup="searchProducts()">
+                    </div>
+                    <button class="btn btn-primary" onclick="showProductModal()">
+                        <i class="fas fa-plus"></i> Nuevo Producto
+                    </button>
+                </div>
+
+                <div class="filters">
+                    <select id="category-filter" onchange="filterProducts()">
+                        <option value="">Todas las categorías</option>
+                    </select>
+                    <input type="number" id="price-min" placeholder="Precio mín" onchange="filterProducts()">
+                    <input type="number" id="price-max" placeholder="Precio máx" onchange="filterProducts()">
+                </div>
+
+                <div id="products-list" class="products-grid"></div>
+                <div id="pagination" class="pagination"></div>
+            </section>
+
+            <!-- Import/Export Section -->
+            <section id="import-export-section" class="content-section" style="display: none;">
+                <div class="import-export-grid">
+                    <!-- Import Card -->
+                    <div class="card">
+                        <h2><i class="fas fa-file-import"></i> Importar Productos</h2>
+                        <p>Sube un archivo CSV o Excel con tus productos</p>
+                        <div class="file-upload">
+                            <input type="file" id="import-file" accept=".csv,.xlsx,.xls" onchange="handleFileSelect(event)">
+                            <label for="import-file">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Seleccionar archivo</span>
+                            </label>
+                            <p id="file-name" class="file-name"></p>
+                        </div>
+                        <button class="btn btn-primary btn-block" onclick="importProducts()" disabled id="import-btn">
+                            <i class="fas fa-upload"></i> Importar
+                        </button>
+                        <div id="import-result" class="import-result"></div>
+                    </div>
+
+                    <!-- Export Card -->
+                    <div class="card">
+                        <h2><i class="fas fa-file-export"></i> Exportar Productos</h2>
+                        <p>Descarga todos tus productos en formato CSV o Excel</p>
+                        <div class="export-buttons">
+                            <button class="btn btn-success btn-block" onclick="exportProducts('csv')">
+                                <i class="fas fa-file-csv"></i> Exportar CSV
+                            </button>
+                            <button class="btn btn-success btn-block" onclick="exportProducts('excel')">
+                                <i class="fas fa-file-excel"></i> Exportar Excel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Import Logs -->
+                <div class="card">
+                    <h2><i class="fas fa-history"></i> Historial de Importaciones</h2>
+                    <div id="import-logs" class="import-logs"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Nuevo Producto</h2>
+                <button class="close-btn" onclick="closeProductModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="product-form" onsubmit="handleProductSubmit(event)">
+                <div class="form-group">
+                    <label for="product-nombre">Nombre *</label>
+                    <input type="text" id="product-nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="product-descripcion">Descripción</label>
+                    <textarea id="product-descripcion" rows="3"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="product-precio">Precio *</label>
+                        <input type="number" id="product-precio" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-stock">Stock *</label>
+                        <input type="number" id="product-stock" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="product-categoria">Categoría *</label>
+                    <input type="text" id="product-categoria" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeProductModal()">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
