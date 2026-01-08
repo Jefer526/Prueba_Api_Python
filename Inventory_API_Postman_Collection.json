@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "inventory-api-collection",
-		"name": "Inventory API - FastAPI",
-		"description": "Colección completa de endpoints para la API de gestión de inventario",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"_postman_id": "inventory-api-collection-v2",
+		"name": "Inventory API - FastAPI (Actualizada)",
+		"description": "Colección completa de endpoints para la API de gestión de inventario con soporte para importación masiva de +100k registros",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"version": "2.0.0"
 	},
 	"auth": {
 		"type": "bearer",
@@ -28,6 +29,7 @@
 								"exec": [
 									"if (pm.response.code === 201) {",
 									"    pm.environment.set(\"user_id\", pm.response.json().id);",
+									"    console.log('Usuario creado con ID:', pm.response.json().id);",
 									"}"
 								],
 								"type": "text/javascript"
@@ -50,7 +52,8 @@
 							"raw": "{{base_url}}/api/v1/auth/register",
 							"host": ["{{base_url}}"],
 							"path": ["api", "v1", "auth", "register"]
-						}
+						},
+						"description": "Registrar un nuevo usuario en el sistema. Retorna el usuario creado con su ID."
 					}
 				},
 				{
@@ -63,6 +66,8 @@
 									"if (pm.response.code === 200) {",
 									"    var jsonData = pm.response.json();",
 									"    pm.environment.set(\"access_token\", jsonData.access_token);",
+									"    console.log('Token obtenido y guardado');",
+									"    console.log('Token:', jsonData.access_token);",
 									"}"
 								],
 								"type": "text/javascript"
@@ -70,6 +75,9 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -82,13 +90,15 @@
 							"urlencoded": [
 								{
 									"key": "username",
-									"value": "usuario_prueba",
-									"type": "text"
+									"value": "admin",
+									"type": "text",
+									"description": "Usuario por defecto: admin"
 								},
 								{
 									"key": "password",
-									"value": "password123",
-									"type": "text"
+									"value": "admin123",
+									"type": "text",
+									"description": "Contraseña por defecto: admin123"
 								}
 							]
 						},
@@ -96,7 +106,8 @@
 							"raw": "{{base_url}}/api/v1/auth/login",
 							"host": ["{{base_url}}"],
 							"path": ["api", "v1", "auth", "login"]
-						}
+						},
+						"description": "Iniciar sesión con OAuth2 (form-urlencoded). Retorna un token JWT que se guarda automáticamente."
 					}
 				},
 				{
@@ -109,6 +120,7 @@
 									"if (pm.response.code === 200) {",
 									"    var jsonData = pm.response.json();",
 									"    pm.environment.set(\"access_token\", jsonData.access_token);",
+									"    console.log('Token obtenido y guardado');",
 									"}"
 								],
 								"type": "text/javascript"
@@ -116,6 +128,9 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -125,16 +140,18 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"username\": \"usuario_prueba\",\n  \"password\": \"password123\"\n}"
+							"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/v1/auth/login-json",
 							"host": ["{{base_url}}"],
 							"path": ["api", "v1", "auth", "login-json"]
-						}
+						},
+						"description": "Iniciar sesión con JSON. Alternativa al login OAuth2."
 					}
 				}
-			]
+			],
+			"description": "Endpoints para registro e inicio de sesión de usuarios"
 		},
 		{
 			"name": "Productos",
@@ -151,34 +168,41 @@
 							"query": [
 								{
 									"key": "skip",
-									"value": "0"
+									"value": "0",
+									"description": "Número de registros a omitir (paginación)"
 								},
 								{
 									"key": "limit",
-									"value": "50"
+									"value": "50",
+									"description": "Número máximo de registros a retornar"
 								},
 								{
 									"key": "categoria",
 									"value": "Electrónica",
-									"disabled": true
+									"disabled": true,
+									"description": "Filtrar por categoría"
 								},
 								{
 									"key": "nombre",
 									"value": "laptop",
-									"disabled": true
+									"disabled": true,
+									"description": "Buscar por nombre (case-insensitive)"
 								},
 								{
 									"key": "precio_min",
 									"value": "100",
-									"disabled": true
+									"disabled": true,
+									"description": "Precio mínimo"
 								},
 								{
 									"key": "precio_max",
 									"value": "1000",
-									"disabled": true
+									"disabled": true,
+									"description": "Precio máximo"
 								}
 							]
-						}
+						},
+						"description": "Obtener listado de productos con paginación y filtros opcionales"
 					}
 				},
 				{
@@ -190,7 +214,8 @@
 							"raw": "{{base_url}}/api/v1/products/1",
 							"host": ["{{base_url}}"],
 							"path": ["api", "v1", "products", "1"]
-						}
+						},
+						"description": "Obtener detalles de un producto específico por su ID"
 					}
 				},
 				{
@@ -202,6 +227,7 @@
 								"exec": [
 									"if (pm.response.code === 201) {",
 									"    pm.environment.set(\"product_id\", pm.response.json().id);",
+									"    console.log('Producto creado con ID:', pm.response.json().id);",
 									"}"
 								],
 								"type": "text/javascript"
@@ -224,7 +250,8 @@
 							"raw": "{{base_url}}/api/v1/products",
 							"host": ["{{base_url}}"],
 							"path": ["api", "v1", "products"]
-						}
+						},
+						"description": "Crear un nuevo producto. Todos los campos son obligatorios excepto descripcion."
 					}
 				},
 				{
@@ -245,7 +272,8 @@
 							"raw": "{{base_url}}/api/v1/products/{{product_id}}",
 							"host": ["{{base_url}}"],
 							"path": ["api", "v1", "products", "{{product_id}}"]
-						}
+						},
+						"description": "Actualizar un producto existente. Solo incluye los campos que deseas modificar."
 					}
 				},
 				{
@@ -257,16 +285,36 @@
 							"raw": "{{base_url}}/api/v1/products/{{product_id}}",
 							"host": ["{{base_url}}"],
 							"path": ["api", "v1", "products", "{{product_id}}"]
-						}
+						},
+						"description": "Eliminar un producto por su ID"
 					}
 				}
-			]
+			],
+			"description": "Endpoints para CRUD de productos"
 		},
 		{
 			"name": "Importación/Exportación",
 			"item": [
 				{
 					"name": "Importar Productos (CSV/Excel)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    console.log('Importación completada:');",
+									"    console.log('Total:', jsonData.total_rows);",
+									"    console.log('Exitosos:', jsonData.successful_rows);",
+									"    console.log('Fallidos:', jsonData.failed_rows);",
+									"    pm.environment.set(\"last_import_log_id\", jsonData.log_id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -276,7 +324,8 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/path/to/productos.csv"
+									"src": "/path/to/productos.csv",
+									"description": "Archivo CSV o Excel con productos"
 								}
 							]
 						},
@@ -284,7 +333,8 @@
 							"raw": "{{base_url}}/api/v1/products/import",
 							"host": ["{{base_url}}"],
 							"path": ["api", "v1", "products", "import"]
-						}
+						},
+						"description": "Importar productos desde un archivo CSV o Excel. Soporta +100k registros. El archivo debe tener las columnas: nombre, descripcion, precio, stock, categoria"
 					}
 				},
 				{
@@ -296,7 +346,8 @@
 							"raw": "{{base_url}}/api/v1/products/export/csv",
 							"host": ["{{base_url}}"],
 							"path": ["api", "v1", "products", "export", "csv"]
-						}
+						},
+						"description": "Exportar todos los productos a formato CSV. Descarga el archivo automáticamente."
 					}
 				},
 				{
@@ -308,7 +359,8 @@
 							"raw": "{{base_url}}/api/v1/products/export/excel",
 							"host": ["{{base_url}}"],
 							"path": ["api", "v1", "products", "export", "excel"]
-						}
+						},
+						"description": "Exportar todos los productos a formato Excel (.xlsx). Descarga el archivo automáticamente."
 					}
 				},
 				{
@@ -317,23 +369,40 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/v1/products/import-logs?skip=0&limit=50",
+							"raw": "{{base_url}}/api/v1/import-logs?skip=0&limit=10",
 							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "products", "import-logs"],
+							"path": ["api", "v1", "import-logs"],
 							"query": [
 								{
 									"key": "skip",
-									"value": "0"
+									"value": "0",
+									"description": "Número de registros a omitir"
 								},
 								{
 									"key": "limit",
-									"value": "50"
+									"value": "10",
+									"description": "Número máximo de logs a retornar"
 								}
 							]
-						}
+						},
+						"description": "Obtener el historial de importaciones con información de éxitos y errores"
+					}
+				},
+				{
+					"name": "Descargar Errores de Importación",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/products/import-logs/{{last_import_log_id}}/download-errors",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "products", "import-logs", "{{last_import_log_id}}", "download-errors"]
+						},
+						"description": "Descargar un archivo CSV con todos los errores de una importación específica. Incluye número de fila, campo, valor y descripción del error. Cambia {{last_import_log_id}} por el ID del log que quieres descargar."
 					}
 				}
-			]
+			],
+			"description": "Endpoints para importación y exportación masiva de productos"
 		},
 		{
 			"name": "Health & Info",
@@ -350,7 +419,8 @@
 							"raw": "{{base_url}}/",
 							"host": ["{{base_url}}"],
 							"path": [""]
-						}
+						},
+						"description": "Endpoint raíz de la API con información básica"
 					}
 				},
 				{
@@ -365,16 +435,65 @@
 							"raw": "{{base_url}}/health",
 							"host": ["{{base_url}}"],
 							"path": ["health"]
-						}
+						},
+						"description": "Verificación de salud de la API. Útil para monitoreo."
+					}
+				},
+				{
+					"name": "API Docs (Swagger)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/docs",
+							"host": ["{{base_url}}"],
+							"path": ["docs"]
+						},
+						"description": "Documentación interactiva de la API (Swagger UI)"
+					}
+				},
+				{
+					"name": "OpenAPI Schema",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/openapi.json",
+							"host": ["{{base_url}}"],
+							"path": ["openapi.json"]
+						},
+						"description": "Esquema OpenAPI en formato JSON"
 					}
 				}
-			]
+			],
+			"description": "Endpoints de información y salud de la API"
 		}
 	],
 	"variable": [
 		{
 			"key": "base_url",
 			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "product_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "last_import_log_id",
+			"value": "",
 			"type": "string"
 		}
 	]
